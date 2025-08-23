@@ -90,6 +90,7 @@ def extract_video_id_from_url(url):
     
     return None # 유효한 유튜브 ID를 찾지 못한 경우
 
+@st.cache_data
 def get_youtube_transcript(video_id):
     """
     유튜브 영상 ID로 스크립트를 가져오는 함수.
