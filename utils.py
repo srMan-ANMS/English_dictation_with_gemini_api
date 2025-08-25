@@ -144,7 +144,8 @@ def clean_script(script):
     """
     정규 표현식을 사용하여 대괄호([])로 묶인 모든 문자열을 제거하고 공백을 정돈합니다.
     """
-    cleaned_script = re.sub(r"[[.*?]]", "", script)
+    # 수정: 대괄호를 이스케이프하여 올바른 정규표현식 패턴 사용
+    cleaned_script = re.sub(r"\[.*?\]", "", script)
     cleaned_script = cleaned_script.replace("\n", " ")
     cleaned_script = " ".join(cleaned_script.split())
     return cleaned_script
