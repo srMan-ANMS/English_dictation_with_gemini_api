@@ -177,7 +177,7 @@ def clean_script(script):
     - 정규 표현식을 사용하여 문자열의 특정 패턴을 찾아 다른 문자열로 대체합니다.
     """
     # r'\['.*?\].' 패턴: '['로 시작해서 ']'로 끝나는 모든 문자열을 찾습니다.
-    cleaned_script = re.sub(r"\ \[.*?\].", "", script)
+    cleaned_script = re.sub(r"\[.*?\]", "", script)
     # 줄바꿈 문자를 공백으로 바꿉니다.
     cleaned_script = cleaned_script.replace("\n", " ")
     # 여러 개의 공백을 하나로 합칩니다.
