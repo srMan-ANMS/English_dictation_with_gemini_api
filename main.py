@@ -8,11 +8,14 @@ import streamlit as st
 # 'from utils import ...'는 Java의 'import com.example.project.utils.YoutubeUtils;'와 같이
 # 다른 파일(모듈)에 정의된 함수들을 가져오는 구문입니다.
 from utils import (
-    extract_video_id_from_url,
+    extract_video_id_from_url,  
+    evaluate,    
+)
+
+from youtube_script_processor import (
     get_youtube_transcript,
     clean_script,
-    evaluate,
-    split_into_sentences,
+    split_into_sentences
 )
 
 # 'if __name__ == "__main__":' 블록은 이 스크립트 파일이 직접 실행될 때만 내부 코드를 실행하도록 하는 Python의 관용구입니다.

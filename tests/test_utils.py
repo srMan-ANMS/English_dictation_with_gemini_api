@@ -1,4 +1,5 @@
-from utils import extract_video_id_from_url, clean_script, split_into_sentences
+from utils import extract_video_id_from_url
+from youtube_script_processor import clean_script, split_into_sentences
 
 # 테스트 함수의 이름은 'test_'로 시작해야 pytest가 인식합니다.
 
