@@ -9,6 +9,7 @@ import streamlit as st
 from youtube_transcript_api import YouTubeTranscriptApi
 from urllib.parse import urlparse, parse_qs
 from google import genai
+from pydantic import BaseModel # 모델이 JSON을 생성하도록 제한하기 위해 Recipe 클래스에서 필요해서
 
 
 def evaluate(original_text, user_text):
@@ -26,6 +27,12 @@ def evaluate(original_text, user_text):
         # API 키는 환경 변수에서 자동으로 로드됩니다. Spring의 @Value("${gemini.api.key}")와 유사한 방식입니다.
         client = genai.Client()
 
+        # https://ai.google.dev/gemini-api/docs/structured-output?hl=ko에서 가져옴
+        # 모델이 JSON 파일로만 응답하도록 responseSchema를 구성함.
+        class Recipe(BaseModel):
+            recipe_name: str
+            ingredients: list[str]
+
         # Java에서 설정 파일을 읽어오듯, .md 파일에서 프롬프트 템플릿을 읽어옵니다.
         # 이는 Spring의 ResourceLoader를 사용하여 클래스패스나 파일 시스템에서 리소스를 읽는 것과 유사합니다.
         with open("prompts/evaluation_prompt.md", "r", encoding="utf-8") as f:
@@ -38,18 +45,29 @@ def evaluate(original_text, user_text):
         )
         # 외부 API를 호출하는 부분입니다. Java의 'restTemplate.postForObject()'나 Feign Client의 메소드 호출과 같습니다.
         response = client.models.generate_content(
-            model="gemini-2.5-flash", contents=prompt
+            model="gemini-2.5-flash", 
+            contents=prompt,
+            config={
+                "response_mime_type": "application/json",
+                "response_schema": list[Recipe],
+            },
         )
 
-        # API 응답(response)에서 텍스트 부분만 추출하고, 불필요한 마크다운 형식을 제거합니다.
-        json_response_text = response.text.strip()
-        if json_response_text.startswith("```json"):
-            json_response_text = (
-                json_response_text.strip("```json").strip("```").strip()
-            )
+        # test부분. 나중에 완료되면 삭제할 것
+        print("response.text: " + response.text)
+
+        # # API 응답(response)에서 텍스트 부분만 추출하고, 불필요한 마크다운 형식을 제거합니다.
+        # 250825:1638: 어차피 API에 JSON 주라 했으니까 불필요한 부분임.
+        # json_response_text = response.text.strip()
+        # if json_response_text.startswith("```json"):
+        #     json_response_text = (
+        #         json_response_text.strip("```json").strip("```").strip()
+        #     )
+
+        # print("json_response_text : " + json_response_text)
         
         # JSON 문자열을 Python 딕셔너리로 파싱합니다. Java의 'objectMapper.readValue(jsonString, Map.class)'와 유사합니다.
-        scoring_result = json.loads(json_response_text)
+        scoring_result = json.loads(response.text)  # 위의 코드가 있다면 response.text는 json_response_text임.
         return scoring_result
 
     except json.JSONDecodeError as e:
