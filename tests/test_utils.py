@@ -32,7 +32,7 @@ def test_extract_video_id_with_additional_params():
     expected_id = "M-y14-3Y6gE"
     assert extract_video_id_from_url(url) == expected_id
 
-# --- clean_script 함수 테스트 ---
+# --- clean_script 함수 테스트 --- 
 
 
 def test_clean_script_removes_brackets():
@@ -63,7 +63,7 @@ def test_clean_script_with_no_special_chars():
     assert clean_script(script) == expected
 
 
-# --- split_into_sentences 함수 테스트 ---
+# --- split_into_sentences 함수 테스트 --- 
 
 
 def test_split_into_sentences_basic():
@@ -92,3 +92,44 @@ def test_split_into_sentences_empty_string():
     script = ""
     expected = []
     assert split_into_sentences(script) == expected
+
+from utils import evaluate
+import pytest
+from unittest.mock import patch, MagicMock, mock_open
+
+# --- evaluate 함수 테스트 --- 
+
+@patch('utils.genai.Client')
+def test_evaluate_loads_prompt_from_file(mock_gemini_client):
+    """
+    evaluate 함수가 파일에서 프롬프트 템플릿을 올바르게 로드하는지 테스트합니다.
+    Java/Spring 관점:
+    - @patch는 Spring의 @MockBean과 유사합니다. 실제 객체 대신 모의(mock) 객체를 주입하여
+      외부 서비스(Gemini API) 호출 없이 순수하게 내부 로직만을 테스트할 수 있게 합니다.
+    """
+    # 모의(mock) 클라이언트와 응답 객체를 설정합니다.
+    # 실제 API 응답을 흉내 내어, API 호출이 성공했다고 가정합니다.
+    mock_response = MagicMock()
+    mock_response.text = '{"score": 100, "positive_feedback": "Great job!", "points_for_improvement": []}'
+    mock_gemini_client.return_value.models.generate_content.return_value = mock_response
+
+    # 테스트용 프롬프트 파일 내용을 정의합니다.
+    mock_prompt_content = "Prompt template: {original_text} vs {user_text}"
+
+    # 'builtins.open'을 모킹하여 실제 파일 I/O를 방지합니다.
+    # mock_open()은 파일 읽기 작업을 가로채 미리 정의된 내용을 반환합니다.
+    # Spring에서 테스트 시 파일 시스템 대신 인메모리 데이터베이스나 리소스를 사용하는 것과 유사한 원리입니다.
+    with patch('builtins.open', mock_open(read_data=mock_prompt_content)) as mock_file:
+        # 테스트할 함수를 호출합니다.
+        evaluate("original", "user")
+
+        # open 함수가 올바른 경로로 호출되었는지 확인합니다.
+        mock_file.assert_called_once_with("prompts/evaluation_prompt.md", "r", encoding="utf-8")
+
+        # Gemini API 클라이언트의 generate_content 메소드가 호출될 때,
+        # 파일에서 읽은 내용으로 포맷팅된 프롬프트가 전달되었는지 확인합니다.
+        expected_prompt = mock_prompt_content.format(original_text="original", user_text="user")
+        mock_gemini_client.return_value.models.generate_content.assert_called_once_with(
+            model="gemini-2.5-flash",
+            contents=expected_prompt
+        )

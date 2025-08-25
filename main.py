@@ -28,6 +28,20 @@ if __name__ == "__main__":
     st.set_page_config(page_title="YouTube 받아쓰기 앱", layout="centered")
     st.title("📚 YouTube 영어 받아쓰기 앱") # h1 태그에 해당
 
+    # --- 프롬프트 내용 표시 ---
+    with st.expander("채점에 사용되는 프롬프트 보기"):
+        try:
+            # Java에서 파일을 읽는 것과 같이, with open(...) 구문을 사용해 파일을 엽니다.
+            # "r"은 읽기 모드, encoding="utf-8"은 한글 등 다양한 문자를 지원하기 위함입니다.
+            with open("prompts/evaluation_prompt.md", "r", encoding="utf-8") as f:
+                prompt_content = f.read()
+            # st.code는 마크다운의 코드 블록(```)처럼 텍스트를 고정폭 글꼴로 보여줍니다.
+            st.code(prompt_content, language="markdown")
+        except FileNotFoundError:
+            # Java의 FileSystemNotFoundException과 유사한 예외 처리입니다.
+            st.error("프롬프트 파일을 찾을 수 없습니다: prompts/evaluation_prompt.md")
+
+
     st.write(
         "유튜브 영상의 스크립트를 가져와 문장 단위로 받아쓰기 연습을 할 수 있습니다."
     )

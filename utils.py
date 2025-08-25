@@ -26,36 +26,16 @@ def evaluate(original_text, user_text):
         # API 키는 환경 변수에서 자동으로 로드됩니다. Spring의 @Value("${gemini.api.key}")와 유사한 방식입니다.
         client = genai.Client()
 
-        # Gemini AI에게 역할을 부여하고 원하는 결과물의 형식을 지정하는 프롬프트입니다.
-        # Spring에서 외부 API로 보낼 요청(Request) DTO를 만드는 과정과 유사하다고 볼 수 있습니다.
-        prompt = f"""
-You are a helpful and friendly English teacher. Please compare the 'Original Script' with the 'Student's Dictation' below and grade it.
+        # Java에서 설정 파일을 읽어오듯, .md 파일에서 프롬프트 템플릿을 읽어옵니다.
+        # 이는 Spring의 ResourceLoader를 사용하여 클래스패스나 파일 시스템에서 리소스를 읽는 것과 유사합니다.
+        with open("prompts/evaluation_prompt.md", "r", encoding="utf-8") as f:
+            prompt_template = f.read()
 
-Grading Criteria:
-1. Accuracy (typos, missing words, extra words)
-2. Grammar and punctuation
-
-You MUST return the result in the following JSON format:
-{{
-  "score": <an integer score between 0 and 100>,
-  "positive_feedback": "<A positive feedback on what the student did well>",
-  "points_for_improvement": [
-    {{
-      "original": "<The original sentence or phrase>",
-      "user_input": "<What the student wrote>",
-      "suggestion": "<A suggestion for improvement or an explanation>"
-    }}
-  ]
-}}
-
----
-**[Original Script]**
-{original_text}
-
-**[Student's Dictation]**
-{user_text}
----
-"""
+        # 읽어온 템플릿에 실제 값을 채워넣어 최종 프롬프트를 완성합니다.
+        # Java의 String.format()이나 메시지 템플릿을 사용하는 것과 같습니다.
+        prompt = prompt_template.format(
+            original_text=original_text, user_text=user_text
+        )
         # 외부 API를 호출하는 부분입니다. Java의 'restTemplate.postForObject()'나 Feign Client의 메소드 호출과 같습니다.
         response = client.models.generate_content(
             model="gemini-2.5-flash", contents=prompt
