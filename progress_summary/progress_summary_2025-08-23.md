@@ -24,9 +24,3 @@
 
 #### **4. API 키 환경 변수 설정 관련 논의**
 *   사용자님께서 `gemini-cli` 사용 중 겪으신 "일일 한도 도달" 문제와 `export GEMINI_API_KEY` 명령어의 올바른 사용법(터미널에서 직접 실행)에 대해 논의했습니다.
-
-#### **5. 내일 할 것**
-*   앱을 빠르게 테스트하면서 사용자 편의성을 늘림.
-*   현재 프로젝트에 데이터베이스 도입 논의. 어떤 방식으로 도입할 지.
-*   프로젝트의 일관성을 위해, gemini cli의 명령어를 이해함으로서 효율적으로 gemini cli를 이용할 수 있도록 하기
-*   https://github.com/google-gemini/gemini-cli/blob/main/docs/checkpointing.md 보고 settings.json 써서 git 푸시 안 해도 되게 고려할 것
