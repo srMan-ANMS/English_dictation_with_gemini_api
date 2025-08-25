@@ -1,5 +1,14 @@
-streamlit
-google-genai
-youtube-transcript-api
-pytest
-ruff
+# 이 파일은 Java/Spring 프로젝트의 pom.xml이나 build.gradle 파일과 유사한 역할을 합니다.
+# 프로젝트에 필요한 Python 라이브러리(의존성) 목록을 정의합니다.
+# 'pip install -r requirements.txt' 명령어를 실행하면, 여기에 명시된 모든 라이브러리가 자동으로 설치됩니다.
+
+# --- 웹 애플리케이션 프레임워크 ---
+streamlit  # 데이터를 시각화하고 간단한 웹 UI를 만드는 데 사용됩니다. Spring Boot + Thymeleaf 또는 React와 유사한 역할을 하지만, Python 코드만으로 빠르게 UI를 만들 수 있다는 장점이 있습니다.
+
+# --- 외부 API 연동 ---
+google-genai  # Google의 Gemini AI 모델을 사용하기 위한 클라이언트 라이브러리입니다. Java에서 Feign Client나 RestTemplate으로 외부 API를 호출하는 것과 유사합니다.
+youtube-transcript-api  # YouTube 영상의 자막/스크립트를 가져오는 라이브러리입니다.
+
+# --- 코드 품질 및 테스트 도구 ---
+pytest  # Python의 표준 테스트 프레임워크 중 하나입니다. Java의 JUnit과 유사한 역할을 합니다.
+ruff  # 매우 빠른 Python 린터(linter) 및 코드 포맷터입니다. 코드 스타일을 검사하고 일관성 있게 유지해줍니다. Java의 Checkstyle, PMD, SpotBugs를 합친 것과 유사합니다.
